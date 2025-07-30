@@ -58,6 +58,7 @@ class TeensyROMControl
       Stream *_port;
       void SendToken(uint16_t TokToSend);
       bool SerialAvailabeTimeout(uint32_t MaxTime = DEFAULT_TIMEOUT_MS);
+      bool FlushRx();
       bool GetAckToken();
 };
 

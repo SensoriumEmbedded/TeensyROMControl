@@ -23,14 +23,7 @@ bool TeensyROMControl::MenuReset()
 {
    SendToken(ResetC64Token);
    DbgPrintf("*Sent Reset\n");
-   
-   if (!SerialAvailabeTimeout(1000)) return false; //wait up to 1 sec for initial response
-   do
-   {
-      uint8_t val = _port->read();
-      DbgWrite(val);
-   } while(SerialAvailabeTimeout());
-   
+   if (!FlushRx()) return false;
    DbgPrintf("*Success\n");   
    return true;
 }
@@ -43,14 +36,7 @@ bool TeensyROMControl::LaunchFile(enDriveSel DriveSel, const char* PathFileName)
    _port->write(DriveSel);
    _port->write(PathFileName, strlen(PathFileName)+1); //include term
    if (!GetAckToken()) return false; 
-   
-   if (!SerialAvailabeTimeout(1000)) return false; //wait up to 1 sec for initial response
-   do
-   {
-      uint8_t val = _port->read();
-      DbgWrite(val);
-   } while(SerialAvailabeTimeout());
-   
+   if (!FlushRx()) return false;
    DbgPrintf("*Success\n");   
    return true;
 }
@@ -72,10 +58,28 @@ bool TeensyROMControl::GetAckToken()
    while (SerialAvailabeTimeout()) 
    {
       uint8_t Val = _port->read();
+      DbgWrite(Val);
       if (Val == ((AckToken >> 8) & 0xFF) && LastVal == (AckToken & 0xFF)) return true;
       LastVal = Val;
    }
+   DbgPrintf("No Ack\n");   
    return false;
+}
+
+bool TeensyROMControl::FlushRx()
+{
+   if (!SerialAvailabeTimeout(1000)) 
+   {
+      DbgPrintf("Nothing to flush\n");   
+      return false; //wait up to 1 sec for initial response
+   }
+   do
+   {
+      uint8_t val = _port->read();
+      DbgWrite(val);
+   } while(SerialAvailabeTimeout());
+   
+   return true;
 }
 
 bool TeensyROMControl::SerialAvailabeTimeout(uint32_t MaxTime)

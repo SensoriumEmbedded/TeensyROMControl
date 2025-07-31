@@ -1,7 +1,7 @@
 
 
 #define CmdChannel   Serial  //port connected to the TeensyROM
-//#define DbgChannel   Serial   //define to select stream for debug data
+//#define DbgChannel   Serial1   //define to select stream for debug data
 
 #include <TeensyROMControl.h>
 #include <Bounce2.h>

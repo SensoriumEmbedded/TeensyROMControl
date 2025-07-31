@@ -4,7 +4,6 @@
 
 #include <Arduino.h>
 
-#define DbgChannel   Serial   //define to select stream for debug data
 
 //synch with TeensyROM\Source\Teensy\MinimalBoot\Common\Common_Defs.h
 #define SetColorToken     0x6422
@@ -54,6 +53,8 @@ class TeensyROMControl
       bool begin(Stream &port);
       bool MenuReset();
       bool LaunchFile(enDriveSel DriveSel, const char* PathFileName);
+      bool PauseSIDToggle();
+
    private:
       Stream *_port;
       void SendToken(uint16_t TokToSend);

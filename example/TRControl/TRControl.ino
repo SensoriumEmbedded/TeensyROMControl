@@ -1,4 +1,8 @@
 
+
+#define CmdChannel   Serial  //port connected to the TeensyROM
+//#define DbgChannel   Serial   //define to select stream for debug data
+
 #include <TeensyROMControl.h>
 #include <Bounce2.h>
 
@@ -11,7 +15,6 @@ uint8_t ButtonPins[] = {Button1_PIN, Button2_PIN, Button3_PIN};
 #define DebounceIntMs  25  
 #define LED_PIN        13
 
-#define CmdChannel   Serial1  //port connected to the TeensyROM
 
 Bounce Buttons[Num_Buttons];
 TeensyROMControl TRCont;
@@ -39,7 +42,7 @@ void loop()
       Buttons[ButNum].update();
       if(Buttons[ButNum].fell())
       {
-         DbgPrintf("Button #%d pressed\n", ButNum);
+         DbgPrintf("Button #%d pressed\n", ButNum+1);
          digitalWrite(LED_PIN, HIGH);
          switch(ButtonPins[ButNum])
          {
@@ -50,7 +53,7 @@ void loop()
                TRCont.LaunchFile(DriveSD, "/Paranoid.sid");
                break;
             case Button3_PIN:
-               TRCont.LaunchFile(DriveUSB, "/games/sound check.prg");
+               TRCont.PauseSIDToggle();
                break;
          }
          digitalWrite(LED_PIN, LOW);

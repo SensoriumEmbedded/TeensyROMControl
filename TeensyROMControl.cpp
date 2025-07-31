@@ -32,11 +32,25 @@ bool TeensyROMControl::LaunchFile(enDriveSel DriveSel, const char* PathFileName)
 {
    SendToken(LaunchFileToken);
    DbgPrintf("*Sent Launch\n");
-   if (!GetAckToken()) return false;  //retry/abort if minimal
+   if (!GetAckToken())  //will fail if in minimal build
+   {
+      MenuReset();
+      SendToken(LaunchFileToken);
+      DbgPrintf("*Re-Sent Launch\n");
+      if (!GetAckToken()) return false;  //retry/abort if minimal
+   }
    _port->write(DriveSel);
    _port->write(PathFileName, strlen(PathFileName)+1); //include term
    if (!GetAckToken()) return false; 
-   if (!FlushRx()) return false;
+   DbgPrintf("*Success\n");   
+   return true;
+}
+
+bool TeensyROMControl::PauseSIDToggle()
+{
+   SendToken(PauseSIDToken);
+   DbgPrintf("*Sent Pause\n");
+   if (!GetAckToken()) return false;
    DbgPrintf("*Success\n");   
    return true;
 }
@@ -68,10 +82,10 @@ bool TeensyROMControl::GetAckToken()
 
 bool TeensyROMControl::FlushRx()
 {
-   if (!SerialAvailabeTimeout(1000)) 
+   if (!SerialAvailabeTimeout(1000)) //wait up to 1 sec for initial response
    {
       DbgPrintf("Nothing to flush\n");   
-      return false; //wait up to 1 sec for initial response
+      return false; 
    }
    do
    {

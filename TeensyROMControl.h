@@ -26,7 +26,7 @@
 
 #include <Arduino.h>
 
-#define DbgChannel   Serial   //define to select stream for debug data
+//#define DbgChannel   Serial1   //define to select stream for debug data
 
 
 //synch with TeensyROM\Source\Teensy\MinimalBoot\Common\Common_Defs.h
@@ -37,8 +37,8 @@
 #define SetSIDSongToken   0x6488  
 #define SIDSpeedLinToken  0x6499  
 #define SIDSpeedLogToken  0x649A  
-#define SIDVoiceMuteToken 0x6433  // SIDVoiceMute
-#define C64PauseOnToken   0x6431  //
+#define SIDVoiceMuteToken 0x6433  // SIDVoiceMute(uint8_t EnableBits)
+#define C64PauseOnToken   0x6431  // C64Pause(bool PauseEnable)
 #define C64PauseOffToken  0x6430  //
 #define DebugToken        0x6467
 #define SendFileToken     0x64AA
@@ -78,13 +78,14 @@ class TeensyROMControl
       bool MenuReset();
       bool LaunchFile(enDriveSel DriveSel, const char* PathFileName);
       bool PauseSIDToggle();
-      bool SIDVoiceMute(uint8_t EnableBits);
-         // bit 0=  Voice 1  on=0, mute=1
-         // bit 1=  Voice 2  on=0, mute=1
-         // bit 2=  Voice 3  on=0, mute=1
+      bool VoiceMuteToggle(uint8_t VoiceNum);
+      bool C64PauseToggle();
 
    private:
       Stream *_port;
+      uint8_t VoiceMuteBits = 0; //default to all unmuted
+      bool C64PauseState = false; //default to unpaused
+
       void SendToken(uint16_t TokToSend);
       bool SerialAvailabeTimeout(uint32_t MaxTime = DEFAULT_TIMEOUT_MS);
       bool FlushRx();

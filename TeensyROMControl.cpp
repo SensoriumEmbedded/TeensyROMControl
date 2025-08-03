@@ -33,7 +33,7 @@ bool TeensyROMControl::MenuReset()
 bool TeensyROMControl::LaunchFile(enDriveSel DriveSel, const char* PathFileName)
 {
    SendToken(LaunchFileToken);
-   DbgPrintf("*Sent Launch\n");
+   DbgPrintf("*Sent Launch: %d:%s\n", DriveSel, PathFileName);
    if (!GetAckToken())  //will fail if in minimal build
    {
       MenuReset();
@@ -51,17 +51,39 @@ bool TeensyROMControl::LaunchFile(enDriveSel DriveSel, const char* PathFileName)
 bool TeensyROMControl::PauseSIDToggle()
 {
    SendToken(PauseSIDToken);
-   DbgPrintf("*Sent Pause\n");
+   DbgPrintf("*Sent Pause Toggle\n");
    if (!GetAckToken()) return false;
    DbgPrintf("*Success\n");   
    return true;
 }
 
-bool TeensyROMControl::SIDVoiceMute(uint8_t EnableBits)
+bool TeensyROMControl::VoiceMuteToggle(uint8_t VoiceNum)
 {
+   if (VoiceNum<1 || VoiceNum>3)
+   {
+      DbgPrintf("Bad Voice Num: $d\n", VoiceNum); 
+      return false;
+   }
+   
+   VoiceMuteBits ^= (1<<(VoiceNum-1));
+      // bit 0=  Voice 1  on=0, mute=1
+      // bit 1=  Voice 2  on=0, mute=1
+      // bit 2=  Voice 3  on=0, mute=1
    SendToken(SIDVoiceMuteToken);
-   _port->write(EnableBits & 0x07);
-   DbgPrintf("*Sent SID Voice Mute: %02x\n", (EnableBits & 0x07));
+   _port->write(VoiceMuteBits);
+   DbgPrintf("*Sent SID Voice Mute: %d\n", VoiceMuteBits);
+   if (!GetAckToken()) return false;
+   DbgPrintf("*Success\n");   
+   return true;
+}
+
+bool TeensyROMControl::C64PauseToggle()
+{
+   C64PauseState =! C64PauseState;  
+   if(C64PauseState) SendToken(C64PauseOnToken);
+   else SendToken(C64PauseOffToken);
+   //_port->write((uint8_t)C64PauseState);
+   DbgPrintf("*Sent C64 Pause: %02x\n", (uint8_t)C64PauseState);
    if (!GetAckToken()) return false;
    DbgPrintf("*Success\n");   
    return true;

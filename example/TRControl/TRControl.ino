@@ -1,23 +1,24 @@
 
 
-#define CmdChannel   Serial  //port connected to the TeensyROM
-//#define DbgChannel   Serial1   //define to select stream for debug data
+#define CmdChannel   Serial1  //Serial port connected to the TeensyROM
 
 #include <TeensyROMControl.h>
 #include <Bounce2.h>
 
-#define Button1_PIN    10
-#define Button2_PIN    11
-#define Button3_PIN    12
-#define Num_Buttons     3
-uint8_t ButtonPins[] = {Button1_PIN, Button2_PIN, Button3_PIN};
+#define LED_PIN        13
+#define Button1_PIN     8
+#define Button2_PIN     9
+#define Button3_PIN    10
+#define Button4_PIN    11
+#define Button5_PIN    12
+#define Num_Buttons     5
+const uint8_t ButtonPins[] = {Button1_PIN, Button2_PIN, Button3_PIN, Button4_PIN, Button5_PIN};
    
 #define DebounceIntMs  25  
-#define LED_PIN        13
-
 
 Bounce Buttons[Num_Buttons];
 TeensyROMControl TRCont;
+uint8_t VoiceMuteBits = 0; //default to all unmuted
 
 void setup() 
 {
@@ -54,6 +55,14 @@ void loop()
                break;
             case Button3_PIN:
                TRCont.PauseSIDToggle();
+               break;
+            case Button4_PIN:
+               VoiceMuteBits ^= 0b001;  //toggle voice 1 mute
+               TRCont.SIDVoiceMute(VoiceMuteBits);
+               break;
+            case Button5_PIN:
+               VoiceMuteBits ^= 0b010;  //toggle voice 1 mute
+               TRCont.SIDVoiceMute(VoiceMuteBits);
                break;
          }
          digitalWrite(LED_PIN, LOW);

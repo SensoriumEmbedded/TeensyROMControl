@@ -1,6 +1,8 @@
 
 #include "TeensyROMControl.h"
 
+//   ***** Public *****
+
 //TeensyROMControl::TeensyROMControl()
 //{
 //   //Constructor
@@ -55,6 +57,15 @@ bool TeensyROMControl::PauseSIDToggle()
    return true;
 }
 
+bool TeensyROMControl::SIDVoiceMute(uint8_t EnableBits)
+{
+   SendToken(SIDVoiceMuteToken);
+   _port->write(EnableBits & 0x07);
+   DbgPrintf("*Sent SID Voice Mute: %02x\n", (EnableBits & 0x07));
+   if (!GetAckToken()) return false;
+   DbgPrintf("*Success\n");   
+   return true;
+}
 
 
 //   ***** Private *****

@@ -1,34 +1,58 @@
+/*
+  The MIT License (MIT)
+
+  Copyright (c) 2025 Travis Smith, Sensorium Embedded, LLC
+
+  Permission is hereby granted, free of charge, to any person obtaining a copy of
+  this software and associated documentation files (the "Software"), to deal in
+  the Software without restriction, including without limitation the rights to
+  use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of
+  the Software, and to permit persons to whom the Software is furnished to do so,
+  subject to the following conditions:
+
+  The above copyright notice and this permission notice shall be included in all
+  copies or substantial portions of the Software.
+
+  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS
+  FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR
+  COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
+  IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
+  CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+*/
 
 #ifndef TeensyROMControl_h
 #define TeensyROMControl_h
 
 #include <Arduino.h>
 
+#define DbgChannel   Serial   //define to select stream for debug data
+
 
 //synch with TeensyROM\Source\Teensy\MinimalBoot\Common\Common_Defs.h
 #define SetColorToken     0x6422
-#define LaunchFileToken   0x6444
+#define LaunchFileToken   0x6444  // LaunchFile(enDriveSel DriveSel, const char* PathFileName)
 #define PingToken         0x6455
-#define PauseSIDToken     0x6466
-#define SetSIDSongToken   0x6488
-#define SIDSpeedLinToken  0x6499
-#define SIDSpeedLogToken  0x649A
-#define SIDVoiceMuteToken 0x6433
-#define C64PauseOnToken   0x6431
-#define C64PauseOffToken  0x6430
+#define PauseSIDToken     0x6466  // PauseSIDToggle()
+#define SetSIDSongToken   0x6488  
+#define SIDSpeedLinToken  0x6499  
+#define SIDSpeedLogToken  0x649A  
+#define SIDVoiceMuteToken 0x6433  // SIDVoiceMute
+#define C64PauseOnToken   0x6431  //
+#define C64PauseOffToken  0x6430  //
 #define DebugToken        0x6467
 #define SendFileToken     0x64AA
 #define PostFileToken     0x64BB
 #define CopyFileToken     0x64FF
 #define GetFileToken      0x64B0
 #define DeleteFileToken   0x64CF
-#define AckToken          0x64CC
+#define AckToken          0x64CC  //Comm
 #define GetDirectoryToken 0x64DD
-#define ResetC64Token     0x64EE
-#define RetryToken        0x9B7E
-#define FailToken         0x9B7F
-#define BadSIDToken       0x9B80
-#define GoodSIDToken      0x9B81
+#define ResetC64Token     0x64EE  // MenuReset()
+#define RetryToken        0x9B7E  //Comm
+#define FailToken         0x9B7F  //Comm
+#define BadSIDToken       0x9B80  //Comm
+#define GoodSIDToken      0x9B81  //Comm
 
 enum enDriveSel
 {
@@ -54,6 +78,10 @@ class TeensyROMControl
       bool MenuReset();
       bool LaunchFile(enDriveSel DriveSel, const char* PathFileName);
       bool PauseSIDToggle();
+      bool SIDVoiceMute(uint8_t EnableBits);
+         // bit 0=  Voice 1  on=0, mute=1
+         // bit 1=  Voice 2  on=0, mute=1
+         // bit 2=  Voice 3  on=0, mute=1
 
    private:
       Stream *_port;

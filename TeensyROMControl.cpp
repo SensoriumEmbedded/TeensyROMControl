@@ -82,7 +82,6 @@ bool TeensyROMControl::C64PauseToggle()
    C64PauseState =! C64PauseState;  
    if(C64PauseState) SendToken(C64PauseOnToken);
    else SendToken(C64PauseOffToken);
-   //_port->write((uint8_t)C64PauseState);
    DbgPrintf("*Sent C64 Pause: %02x\n", (uint8_t)C64PauseState);
    if (!GetAckToken()) return false;
    DbgPrintf("*Success\n");   

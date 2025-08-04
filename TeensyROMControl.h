@@ -38,26 +38,27 @@
 #define SIDSpeedLinToken  0x6499  
 #define SIDSpeedLogToken  0x649A  
 #define SIDVoiceMuteToken 0x6433  // SIDVoiceMute(uint8_t EnableBits)
-#define C64PauseOnToken   0x6431  // C64Pause(bool PauseEnable)
-#define C64PauseOffToken  0x6430  //
+#define C64PauseOnToken   0x6431  // C64 Paused
+#define C64PauseOffToken  0x6430  // C64 Unpaused
 #define DebugToken        0x6467
 #define SendFileToken     0x64AA
 #define PostFileToken     0x64BB
 #define CopyFileToken     0x64FF
 #define GetFileToken      0x64B0
 #define DeleteFileToken   0x64CF
-#define AckToken          0x64CC  //Comm
+#define AckToken          0x64CC  //    Comm
 #define GetDirectoryToken 0x64DD
 #define ResetC64Token     0x64EE  // MenuReset()
-#define RetryToken        0x9B7E  //Comm
-#define FailToken         0x9B7F  //Comm
-#define BadSIDToken       0x9B80  //Comm
-#define GoodSIDToken      0x9B81  //Comm
+#define RetryToken        0x9B7E  //    Comm
+#define FailToken         0x9B7F  //    Comm
+#define BadSIDToken       0x9B80  //    Comm
+#define GoodSIDToken      0x9B81  //    Comm
 
-enum enDriveSel
+enum enDriveSel  //matches enum RegMenuTypes
 {
-   DriveUSB,  // 0
-   DriveSD,   // 1
+   DriveUSB,    // 0
+   DriveSD,     // 1
+   DriveTeensy, // 2
 };
 
 #define DEFAULT_TIMEOUT_MS  50 //default mS to wait for each char when expecting data
